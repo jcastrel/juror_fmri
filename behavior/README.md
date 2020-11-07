@@ -1,4 +1,5 @@
-Models, analysis, and reproducible results for the paper ["Modeling the effects of crime type and evidence on judgments about guilt"](https://www.nature.com/articles/s41562-018-0451-z.epdf?author_access_token=gW_gZL0F4bNCBdSfJdfHqtRgN0jAjWel9jnR3ZoTv0OPcExbUXFEBLmRIJVwmtiNjh9IEH2pkC2Nh_cBrWPkHuJj4keS7hpDBQvmnU20N9jF3OGevYkvLVEkxopzUvo61hticf34wy0yLHXrWmQ-AA%3D%3D).
+Models, analysis, and reproducible results come from ["Modeling the effects of crime type and evidence on judgments about guilt"](https://www.nature.com/articles/s41562-018-0451-z.epdf?author_access_token=gW_gZL0F4bNCBdSfJdfHqtRgN0jAjWel9jnR3ZoTv0OPcExbUXFEBLmRIJVwmtiNjh9IEH2pkC2Nh_cBrWPkHuJj4keS7hpDBQvmnU20N9jF3OGevYkvLVEkxopzUvo61hticf34wy0yLHXrWmQ-AA%3D%3D).
+Github Repo(https://github.com/pearsonlab/legal)
 
 # What you need (dependencies):
 We used R via [RStudio](https://www.rstudio.com/). RStudio is not strictly necessary, but it may make building some aspects of the project (e.g., the supplement) easier. We also make heavy use of the [Stan](http://mc-stan.org/) probabilistic programming language and the [tidyverse](https://tidyverse.tidyverse.org/index.html). A few other dependencies are used for particular plots or tables.
@@ -23,32 +24,15 @@ The file is a single table, one line per rating given, with the following column
 - `physical`: Which physical evidence was presented? (`No Physical`, `Non-DNA`, `DNA`)
 - `history`: What criminal history information was presented? (`No History`, `Unrelated`, `Related`)
 - `witness`: What eyewitness information was presented? (`No Witness`, `Yes Witness`)
-- `nonwhite`: Did the participant identify as non-white? (`FALSE`, `TRUE`)
-- `hispanic`: Did the participant identify as hispanic? (`FALSE`, `TRUE`)
-- `female`: Did the participant identify as female? (`FALSE`, `TRUE`)
-- `question`: In what order did the participant encounter this case to be rated? (0 - 32)
-- `evidence_shown`: Was any evidence shown? Some participants performed a version of the task with no evidence.
-- `age`: Participant's reported age.
-- `gender`: Participant's reported gender. Recoded as `female` for modeling.
-- `race`: Participant's reported race. Binarized as `nonwhite` for modeling.
-- `ethnicity`: Participant's reported ethnicity. Binarized as `hispanic` for modeling.
-- `education`: Participant's highest level of education.
-- `political_party`: Participant's party affiliation.
 - `rating_type`: Which type of rating does the datum represent:
   - `rating`: Most common. "How strong is the case that the accused committed this crime?"
   - `rate_punishment`: Next most common when participants gave two or more ratings. "How severe should the punishment be for someone who commits a crime like this one?"
-  - `rate_outrage`: "When you read about crimes like this one, how upset to you feel?"
-  - `rate_threat`: "How likely is this crime to occur in your community?"
-  - `rate_threat2`: "When you read about a crime like this, how concerned do you feel for your own safety, or the safety of your community?"
-  - `guilty`: Did the participant think the defendant was guilty? (`rating` of 0 or 1)
 - `rating`: Numerical rating for the relevant question (1 - 100).
 - `group`: Which experimental group the participant belonged to:
-  - `mturk`: Amazon Mechanical Turk sample.
-  - `legal`: Law students
-  - `ilsa`: Illinois Prosecutors
-  - `lsba`: Louisiana Bar
+  - `mturk`: Amazon Mechanical Turk sample. (Previously reported in ["Modeling the effects of crime type and evidence on judgments about guilt"](https://www.nature.com/articles/s41562-018-0451-z.epdf?author_access_token=gW_gZL0F4bNCBdSfJdfHqtRgN0jAjWel9jnR3ZoTv0OPcExbUXFEBLmRIJVwmtiNjh9IEH2pkC2Nh_cBrWPkHuJj4keS7hpDBQvmnU20N9jF3OGevYkvLVEkxopzUvo61hticf34wy0yLHXrWmQ-AA%3D%3D) )
+  - `mri`: fMRI sample
 
-All together, the data comprise more than 144,000 ratings from 878 unique individuals. Demographic information were collected from all participants but only included in the combined data for the mTurk sample.
+All together, the fMRI sample data comprise more than 2,140 ratings from 33 unique individuals. Demographic information were collected from all participants but only included in the combined data for the mTurk sample.
 
 # Building the project
 The main directory contains a Makefile. Mac and Linux users should have `make` installed. Windows users will need to get `make` ([Rtools](https://cran.r-project.org/bin/windows/Rtools/) has it). See also this [StackOverflow Answer](https://stackoverflow.com/questions/33608345/how-to-execute-a-makefile-from-r).
