@@ -1,0 +1,1131 @@
+---
+title: |
+  | Supplementary Information for: 
+  | "Modeling the effects of crime type and evidence on judgments about guilt"
+author: "Pearson et al."
+date: "9/28/2018"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: false
+  html_document: default
+header-includes:
+- \usepackage{amsmath, amssymb}
+- \usepackage[labelfont=bf]{caption}
+- \usepackage{float}
+
+bibliography: supp.bib
+---
+\captionsetup[table]{name=Supplementary Table}
+\captionsetup[figure]{name=Supplementary Figure}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.pos= "H", out.extra='')
+```
+# Supplementary Methods
+
+## Scenario crime descriptions and evidence options
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, results = "asis"}
+library(jsonlite)
+
+sc <- fromJSON('../data/scenarios.json', flatten=TRUE) 
+
+template <- "### Scenario %s:
+%s
+
+- **Criminal History**
+  - *Related*:   %s
+  - *Unrelated*: %s
+  - *No prior*:  %s
+
+- **Witness**
+  - *Witness*:   %s
+  - *No witness*: %s
+
+- **Physical evidence**
+  - *DNA*:   %s
+  - *non-DNA*: %s
+  - *none*:  %s
+
+"
+
+sc_formatted <- sprintf(template, sc$abbr, 
+                        sc[['vars.base.Base']],
+                        sc[['vars.Criminal History.relatedPrior']],
+                        sc[['vars.Criminal History.unrelatedPrior']],
+                        sc[['vars.Criminal History.noPrior']],
+                        sc[['vars.Witness.isWitness']],
+                        sc[['vars.Witness.noWitness']],
+                        sc[['vars.Physical Evidence.DNA']],
+                        sc[['vars.Physical Evidence.nonDNA']],
+                        sc[['vars.Physical Evidence.noPhys']]
+                        )
+
+cat(sc_formatted, sep='')
+```
+
+## Task Directions and Questions
+
+### Standard directions
+
+You are about to read a series of short, fictitious criminal cases. After
+reading the accusation against the defendant, view additional
+information by clicking each of the three grey buttons and holding for
+as long as you want to read.
+
+For example, clicking on the button labeled \"Physical Evidence\" would
+show any physical evidence that had been found in the case. You may
+click and read the facts in each box as many times as you like.
+
+After reading the entire story and the additional information, reflect
+on how you feel about the facts in the case as it is presented. Please
+do not be concerned about making a legal judgment, especially with
+regard to the rules of evidence or the law, but rather merely consider
+your personal opinions and intuitions about the case. 
+
+You will then be asked about the strength of the case against the
+accused and the amount of punishment that type of crime deserves.
+
+For each question, move the slider to the position that best reflects
+your personal judgment.
+
+When you are finished, click the Submit button to go to the next
+question.
+
+### Explicit/curative directions
+
+You are about to read a series of short descriptions of fictitious
+criminal cases. After reading the accusation against the defendant, view
+additional information by clicking and holding down the mouse button
+over each of the four grey boxes.
+
+For example, clicking on the button labeled \"Physical Evidence\" would
+show any physical evidence that had been found in the case. You may
+click and read the facts in each box as many times as you like.
+
+After reading the entire story, reflect on how you feel about the facts
+in the case as it is presented. Do not be concerned about making a legal
+judgment. Rather, think about your personal opinions and intuitions
+about the case.
+
+You will then be asked two questions.
+
+First, how strong is the case against the person who was accused of the
+crime? How confident are you, based on the evidence that you read, that
+the accused actually did it? Is the evidence in the case strong or weak?
+Do not let your feelings about the seriousness or awfulness of the crime
+sway your judgment about whether that person actually committed the
+crime.
+
+The second question is the opposite. Setting aside whether you think the
+accused committed the crime, how severely should anyone who commits a
+crime like this be punished? Is it a horrible and heinous crime,
+deserving of life in prison without parole? Or is it not serious, and
+should be punished very lightly, if at all? When choosing the amount of
+punishment, think only about the kind of crime that the accused is
+accused of, not whether he or she actually did it.
+
+For both questions, move the slider to the position that best reflects
+your personal judgment. When you are finished, click the Submit button
+to go to the next question.
+
+### Questions
+
+**Confidence** (C): How strong is the case that the accused committed this
+crime?
+
+Slider: Very weak, Very strong
+
+**Punishment** (P): How severe should the punishment be for someone who
+commits a crime like this one?
+
+Slider: No punishment, Life in prison without parole
+
+**Guilt** (G): Based on what you've read, do you think the accused is
+guilty?
+
+Button: Yes, guilty; No, not guilty
+
+**Outrage** (O): When you read about crimes like this one, how upset to you
+feel?
+
+Slider: Not upset, Outraged
+
+**Threat** (T): When you read about a crime like this, how concerned do you
+fell for your own safety, or the safety of your community?
+
+Slider: Not concerned at all, Very concerned
+
+**Likelihood** (L): How likely is this crime to occur in your community?
+
+Slider: Not at all likely, Very likely
+
+## Single Rating Model
+For the case of a single rating outcome (case strength), we separately model each group of participants as follows: Given a set of
+ratings $R$ indexed by $i=1\ldots N$, and an $N \times P$ design matrix $X$ (with columns corresponding to regressors $p=1\ldots P$), we assume for a given observation $i$ corresponding to 
+subject $s$ and case $c$:
+
+\begin{align}
+  R_i &\sim \left[\mathcal{N}(\theta_i, \sigma^2)\right]^{100}_0 \label{rating}\\
+  \theta_i &= X_{i \,\cdot} \cdot \beta_{s(i) c(i) \,\cdot} \label{theta}\\
+  \beta_{s c p} &\sim \mathcal{T}_{\nu}(\gamma_{c p}, \tau^2_{c p}) \label{beta}\\
+  \gamma_{c p} &\sim \mathcal{T}_{\nu'}(\mu_p, \eta^2_p) \label{gamma}\\
+  \mu_p &\sim \mathcal{N}(50, 50) \label{mu} \\
+  \eta_p &\sim \mathrm{Ca}^+(0, 50) \\
+  \tau_{c p} &\sim \mathrm{Ca}^+(0, 50) \\
+  \sigma &\sim \mathrm{Ca}^+(0, 5) \\
+  \nu, \nu' &\sim \mathcal{N}^+(0, 100) \label{nu}
+\end{align}
+
+That is:
+
+- ratings are generated from a normal distribution censored to lie in the range $[0, 100]$ (\ref{rating})
+- linear predictors of ratings are weighted sums of subject-, case-, and regressor-specific effects (\ref{theta})
+- $\beta$ effects for each subject are drawn from a case- and regressor-specific distribution (\ref{beta})
+- $\gamma$ effects for each case are themselves drawn from a regressor-specific distribution of effects (\ref{gamma})
+- effects at the case and single-subject level are modeled as robuts/fat-tailed, with Student-t distributions (\ref{beta},\ref{gamma})
+- variances ($\eta^2$, $\tau^2$, $\sigma^2$) are modeled using weakly informative half-Cauchy priors [@gelman2006prior], 
+  while degrees of freedom ($\nu$, $\nu'$) are modeled using weak half-Normal priors
+
+This approach allows for flexible fitting (including estimates of variance) at the regressor, case, and individual levels, while
+at the same time leveraging partial pooling to share statistical strength across these levels [@gelman2006data].
+
+## Multiple Rating Model
+For the case in which subjects provide multiple ratings (punishment, case strength, etc.) for a given scenario, we model the resulting
+vector of ratings, $R_r$, $r=1\ldots N_r$, similarly:
+
+\begin{align}
+  R_i &\sim \left[\mathcal{N}(\theta_i, \sigma^2_{r(i)})\right]^{100}_0 \label{rating_m}\\
+  \theta_i &= X_{i \,\cdot} \cdot \beta_{s(i) c(i) \,\cdot \,r(i)} \label{theta_m}\\
+  \beta_{s c p r} &\sim \mathcal{T}_{\nu}(\gamma_{c p r}, \tau^2_{p r}) \label{beta_m}\\
+  \gamma_{c p} &\sim \mathcal{T}_{\nu'}(\mu_p, \Sigma_p) \label{gamma_m}\\
+  \Sigma_p &= L_p \cdot \mathrm{diag}(\eta_p)\cdot L_p^\top \\
+  \Omega_p = L_p L_p^\top &\sim \mathrm{LKJ}(1) \label{L_m}\\
+  \mu_{p r} &\sim \mathcal{N}(50, 50) \label{mu_m} \\
+  \eta_{p r} &\sim \mathrm{Ca}^+(0, 50) \\
+  \tau_{p r} &\sim \mathrm{Ca}^+(0, 50) \\
+  \sigma_r &\sim \mathrm{Ca}^+(0, 5) \\
+  \nu, \nu' &\sim \mathcal{N}^+(0, 100) \label{nu_m}
+\end{align}
+
+Here, we have used a "long" or "melted" representation of $R$ in which each index $i$ corresponds to a single observation of a
+single rating scale $r(i)$. This allows us to more easily handle missing data in the model fitting procedure (see below). 
+The model is almost equivalent to concatenating $N_r$ versions of the first model, one for each rating, 
+aside from two key differences: First (\ref{gamma_m}) and (\ref{L_m}) involve a multivariate t-distribution on the population 
+effects specific to 
+each case ($\gamma$). That is, we allow for covariance among the ratings for each effect at the population level, where the magnitudes of the 
+variances are again controlled by $\eta$ and the correlations $\Omega = LL^\top$ are modeled according to the LKJ distribution [@Lewandowski2009-tm]
+through their Cholesky factorization (\ref{L_m}).\footnote{Implemented as \texttt{L \textasciitilde{} lkj\_corr\_chol(1)} in Stan.}
+Second, in order to more accurately estimate variances in the presence of missing data, we have restricted this model to a single
+value of $\tau$ across all cases (for each outcome and regressor) (\ref{beta_m}).
+
+## Model Fitting
+We calculated posterior distributions and credible intervals for each variable of interest using Markov Chain Monte Carlo methods
+as implemented in the Stan probabilistic programming language [@carpenter2016stan]. Full code for all analyses is available at 
+[https://github.com/pearsonlab/legal](https://github.com/pearsonlab/legal). Models were fit by running 4 chains of either 1000 samples (case strength only model) with a thinning fraction of 1 or 2000
+samples (multiple outcome models) with a thinning fraction of 2. For both models, the first half of samples were discarded as burn-in. This resulted 
+in 2000 total samples for each variable, for which we report means as well as 95% equal-tailed credible intervals (bounded 
+by the 2.5% and 97.5% samples from the distribution). We assessed convergence via effective sample size and the
+Gelman-Rubin statistic, for which all runs had $\hat{R} < 1.1$ [@gelman2014bayesian]. We include plots of $\hat{R}$ for our our single-outcome, two-outcome, and all-outcome models in Supplementary Figures \ref{sv_rhat}, \ref{2v_rhat}, and \ref{mv_rhat}.
+
+## Sensitivity Analysis
+Given the large number of model parameters in comparison to the numer of data points, it is quite possible that our particular modeling assumptions might affect posterior inferences. To test this, we performed a sensitivity analysis in which the distributions for case- and subject-specific effects (\ref{beta}), (\ref{gamma}), (\ref{beta_m}), and (\ref{gamma_m}) were changed from Student t to normal. This assumption reflects a belief that few cases and subjects are true outliers, and should result in larger estimates of the relevant variance parameters and more shrinkage of estimates toward the mean. We re-ran all models (single-, double-, and multi-outcome) from our main analyses again using these alternate assumptions.
+
+We found nearly identical results for the two models. Figures 2-4 from the main text are reproduced below as Supplementary Figures \ref{fig_2_norm}--\ref{fig_4_norm}. Indeed, in our single-response models, we verified posterior means $\mathbb{E}\nu > 100$ and $91 > \mathbb{E}\nu' > 61$ for all groups, indicating that our Student t models are very close to normal.
+
+\newpage
+
+# Supplementary Tables
+
+## Demographics
+Here, we give a breakdown of our mTurk sample. We include all participants, including those in Experiment 1C (no evidence), though these were not used in our models.
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.height=6, fig.cap="\\label{demo_table}"}
+library(tidyverse)
+library(kableExtra)
+
+mturk_demos <- read.csv('../data/combined_data.csv') %>% filter(group=='mturk') %>%
+  distinct(uid, .keep_all=TRUE)
+
+# renaming, etc.
+cutpts = c(17, 21, 25, 30, 40, 50, 60, 90) # cutpoints for age ranges
+mturk_demos$age = cut(mturk_demos$age,cutpts)
+
+mturk_demos$gender <- factor(mturk_demos$gender, levels=c("Male", "Female", "Other"))
+mturk_demos$race <- factor(mturk_demos$race, 
+                           levels=c("American Indian or Alaska Native", 
+                                    "Asian", 
+                                    "Black or African American",
+                                    "Native Hawaiian or other Pacific Islander",
+                                    "White",
+                                    "More than one race",
+                                    "Unknown or do not want to disclose"))
+mturk_demos$ethnicity <- factor(mturk_demos$ethnicity,
+                                levels=c("Hispanic or Latino", 
+                                         "Not Hispanic or Latino", 
+                                         "Unknown or do not want to disclose"))
+mturk_demos$education <- factor(mturk_demos$education,
+                                levels=c("Less than high school", 
+                                         "Completed high school",
+                                         "GED", 
+                                         "Some college",
+                                         "Associate's Degree", 
+                                         "Bachelor's Degree", 
+                                         "Master's Degree", 
+                                         "Ph.D.", 
+                                         "Law degree",
+                                         "Other professional degree"))
+mturk_demos$political_party <- factor(mturk_demos$political_party, 
+                                      levels=c("Independent or no party Affiliation", 
+                                               "Republican", 
+                                               "Democrat", 
+                                               "Other", 
+                                               "I am not a registered voter"))
+
+get_count_tbl <- function(varname){
+  id <- "uid"
+  Ntot <- dim(mturk_demos)[1]
+  tbl <- mturk_demos %>% select_(id, varname) %>% group_by_(varname) %>% 
+    summarize(count=n(), percent=round(100 * n()/Ntot, 1))
+  names(tbl) <- str_replace_all(names(tbl), "_", " ") %>% tools::toTitleCase()
+  return(tbl)
+}
+
+kable(get_count_tbl("gender"), caption="Participant Demographics - Gender") %>%
+  kable_styling(latex_options = c("HOLD_position"))
+kable(get_count_tbl("age"), caption="Participant Demographics - Age") %>%
+  kable_styling(latex_options = c("HOLD_position"))
+kable(get_count_tbl("race"), caption="Participant Demographics - Race") %>%
+  kable_styling(latex_options = c("HOLD_position"))
+kable(get_count_tbl("ethnicity"), caption="Participant Demographics - Ethnicity") %>%
+  kable_styling(latex_options = c("HOLD_position"))
+kable(get_count_tbl("education"), caption="Participant Demographics - Education") %>%
+  kable_styling(latex_options = c("HOLD_position"))
+kable(get_count_tbl("political_party"), caption="Participant Demographics - Political Party") %>%
+  kable_styling(latex_options = c("HOLD_position"))
+```
+
+## Experimental design
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+
+dat <- read.csv('../data/combined_data.csv') %>% 
+  select(uid, experiment, rating_type, rating) %>%
+  na.omit %>%
+  select(-rating) %>%
+  distinct() %>%
+  mutate(rating_type=factor(rating_type, levels=c(
+    'rating', 'rate_punishment', 'rate_outrage', 'rate_threat', 'rate_threat_2', 'guilty'),
+    labels=c('Confidence', 'Punishment', 'Outrage', 'Likelihood', 'Threat', 'Guilt')
+  )) %>%
+  rename(Experiment=experiment)
+
+
+experiment_counts <- dat %>% select(-rating_type) %>% distinct() %>% 
+  count(Experiment) %>% rename(Subjects=n)
+question_counts <- dat %>% count(Experiment, rating_type) %>%
+  spread(key=rating_type, value=n)
+details_table <- data.frame(Experiment=c('1A', '1B', '1C', '1D', '1E', '1F', '2A', '2B', '2C'),
+                            Description=c('Five questions',
+                                          'Single question',
+                                          'No evidence',
+                                          'Explicit directions',
+                                          'Two questions',
+                                          'Threat',
+                                          'Law students',
+                                          'LA state bar',
+                                          'IL prosecutors'),
+                            Format=c('Group', rep('Sequential', 2), rep('Group', 6)))
+subject_counts <- merge(details_table, merge(experiment_counts, question_counts))
+
+op <- options(knitr.kable.NA = '')
+
+kable(subject_counts, format="latex", booktabs=T, escape=F,
+      caption="Task variations and subjects. Numbers in each column are numbers of subjects who answered each question for each experiment.\\label{exp_variants_table}",
+      linesep=c('', '', '', '', '', '\\addlinespace')) %>% 
+  kable_styling(full_width=F, latex_options = c("HOLD_position", "striped", "scale_down")) %>%
+  add_header_above(c(" " = 4, "Question" = 6))
+
+options(op)
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+
+analysis_sets <- data.frame(Figure=c('1', '1', '1', '2', '3', '4', '4'),
+                            Panels=c('B', 'C', 'D', 'A, B, C', 'A, B, C, D', 'A, B, C', 'D'),
+                            Criteria=c('mTurk, evidence presented, confidence question',
+                                       'mTurk, evidence presented, confidence \\emph{and} guilt questions',
+                                       'mTurk, evidence presented, punishment question',
+                                       'mTurk, evidence presented, confidence question',
+                                       'evidence presented, confidence question',
+                                       'mTurk, evidence presented, any non-guilt question',
+                                       'evidence presented, \\emph{either} confidence or punishment question'),
+                            Experiments=c('1A, 1B, 1D, 1E, 1F',
+                                          '1A',
+                                          '1A, 1B, 1D, 1E',
+                                          '1A, 1B, 1D, 1E, 1F',
+                                          '1A, 1B, 1D, 1E, 1F, 2A, 2B, 2C',
+                                          '1A, 1B, 1D, 1E, 1F',
+                                          '1A, 1B, 1D, 1E, 2A, 2B, 2C'))
+
+kable(analysis_sets, format="latex", booktabs=T, escape=F,
+      caption="Subsets of data used in each analysis.\\label{subsets_table}") %>% 
+  kable_styling(full_width=F, latex_options = c("HOLD_position", "striped", "scale_down"))
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+
+sc_class <- read.csv('../data/scenario_classification.csv', check.names=FALSE) %>%
+  select(`Scenario`, `Base crime description`, `Crime type`, `Category`, `Class`) 
+
+kable(sc_class, format="latex", booktabs=T, escape=T, longtable=T,
+      caption="Scenario legal classifications.\\label{seriousness_table}")  %>%
+  column_spec(2, width='20em') %>%
+  column_spec(c(3, 5), width='8em') %>%
+  kable_styling(full_width=F, latex_options = c("HOLD_position", "striped", "repeat_header"))
+```
+
+## Posteriors for differences in evidence effects
+In Tables \ref{group_effects_table} and \ref{outcome_effects_table}, we give 95\% credible intervals for the posterior differences in mean evidence effects across our population samples (Table \ref{group_effects_table}; cf. Figure 3A) and different rating types (Table \ref{outcome_effects_table}; cf. Figure 4A). That is, for each pair of variables, the numbers represent an interval that contains 95\% of the posterior probability mass.
+
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+
+load('../data/stan_postprocess_ci.rdata')
+not_in_ci <- function(ci, x=0) {
+  ifelse(x >= ci[[1]] && x <= ci[[2]], F, T)
+}
+ci_table <- group_ci_df %>% 
+  mutate_all(funs(lapply(., function(x){lapply(x, round, 1)}))) %>%
+  mutate_all(funs(cell_spec(., "latex", bold=lapply(., not_in_ci)))) %>%
+  mutate_all(funs(str_replace(., "list", "")))
+row.names(ci_table) <- row.names(group_ci_df)
+
+kable(ci_table, format="latex", booktabs=T, escape=F,
+      caption="Bayesian 95\\% equal-tailed credible intervals for contrasts 
+      between population mean effects. Cf. Figure 3A in main text. Intervals excluding 0 are in bold.\\label{group_effects_table}") %>% 
+  kable_styling(full_width=F, latex_options = c("HOLD_position"), font_size=8) %>%
+  column_spec(1, width = "10em") %>%
+  column_spec(2:7, width = "6.5em")
+
+
+ci_table <- ratings_ci_df %>% 
+  mutate_all(funs(lapply(., function(x){lapply(x, round, 1)}))) %>%
+  mutate_all(funs(cell_spec(., "latex", bold=lapply(., not_in_ci)))) %>%
+  mutate_all(funs(str_replace(., "list", "")))
+row.names(ci_table) <- row.names(ratings_ci_df)
+
+kable(ci_table, format="latex", booktabs=T, escape=F,
+      caption="Bayesian 95\\% equal-tailed credible intervals for contrasts 
+      between rating type mean effects. Cf. Figure 4A in main text. Intervals excluding 0 are in bold.\\label{outcome_effects_table}") %>% 
+  kable_styling(full_width=F, latex_options = c("HOLD_position"), font_size=8) %>%
+  column_spec(1, width = "10em") %>%
+  column_spec(2:7, width = "6.5em")
+```
+
+\newpage
+
+# Supplementary Figures
+
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.height=4, fig.cap="Absence of task learning effect. Comparison of distributions of first and last five ratings given by each participant. \\label{task_learning_effect}"}
+source("../ggplot_setup.R")
+
+mturk_ratings <- read.csv('../data/combined_data.csv') %>% 
+  filter(group=='mturk', evidence_shown, rating_type != 'guilty')
+maxq <- max(unique(mturk_ratings$question))
+
+# filter to first five and last five questions 
+first_last <- mturk_ratings %>% filter(question < 5 | maxq - question < 5) %>% 
+  mutate(early = factor(question < 5, levels=c(TRUE, FALSE), labels=c("Early", "Late")))
+
+# Density plot early vs late ratings
+plt <- ggplot(first_last) +
+  geom_density(aes(x=rating, fill=early), alpha=0.5) +
+  xlab("Confidence in Guilt") +
+  ylab("Density") +
+  scale_fill_discrete(name = "Scenario occurrence") +
+  th +
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        legend.title=element_text(),
+        legend.position=c(0.15, 0.9))
+plot(plt)
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.height=6, fig.cap="Deserved punishment ratings as a function of crime severity. Plotted separately for State (A) and Federal (B) crimes. \\label{seriousness_by_crime_type}"}
+library(tidyverse)
+library(grid)
+library(gridExtra)
+source("../ggplot_setup.R")
+
+load('../data/stan_postprocess_2v_t.rdata')
+
+# dataframe linking scenarios to seriousness as rank ordered by PS
+sc_ranked <- as.factor(c(27, 6, 12, 29, 13, 14, 1, 24, 2, 22, 25,
+                                        3, 8, 9, 4, 18, 33, 15, 7, 19, 28, 32, 5, 11, 26, 17,
+                                        20, 30, 31, 21, 10, 16, 23))
+crime_type <- rep('state', 33)
+crime_type[c(1, 14, 28)] <- 'federal'
+crime_type <- as.factor(crime_type)
+
+seriousness <- data.frame(seriousness=as.factor(c(1:33)), 
+                          scenario=sc_ranked,
+                          crime_type=crime_type)
+
+df <- merge(dat, seriousness) %>% filter(rating_type=='rate_punishment') %>% 
+  group_by(scenario, seriousness, crime_type) %>% 
+  summarise(punish=median(rating), lower=quantile(rating, 0.25), 
+            upper=quantile(rating, 0.75))
+  
+
+# boxplot punishment rating by seriousness
+plt_1 <- ggplot(df %>% filter(crime_type=='state')) +
+  geom_pointrange(aes(seriousness, punish, ymin=lower, ymax=upper), color=color_conf) + 
+  # geom_smooth(aes(as.numeric(seriousness), punish), color=color_conf, span=0.85, fullrange=TRUE) +
+  scale_x_discrete(name='Scenario (rank-ordered by severity)',
+                   breaks=c(1:33),
+                   labels=seriousness$scenario) + 
+  coord_cartesian(ylim=c(0, 100)) +
+  labs(title="A. State Crimes", size=rel(3)) +
+  ylab("Punishment Rating (points)") +
+  th +
+  theme(
+    axis.text.x = element_text(size=rel(0.75))
+    )
+
+plt_2 <- ggplot(df %>% filter(crime_type=='federal')) +
+  geom_pointrange(aes(seriousness, punish, ymin=lower, ymax=upper), color=color_conf) + 
+  # geom_smooth(aes(as.numeric(seriousness), punish), color=color_conf, span=0.85, fullrange=TRUE) +
+  scale_x_discrete(name='Scenario (rank-ordered by severity)',
+                   breaks=c(1:33),
+                   labels=seriousness$scenario) + 
+  coord_cartesian(ylim=c(0, 100)) +
+  labs(title="B. Federal Crimes", size=rel(3)) +
+  ylab("Punishment Rating (points)") +
+  th +
+  theme(
+    axis.text.x = element_text(size=rel(0.75))
+    )
+plot(arrangeGrob(plt_1, plt_2))
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=8, fig.cap="Comparison of evidence and demographic effects for the mTurk sample (cf. Figure 2A). Analyses were performed on a reduced sample of $N=368$ participants with complete demographic information for the variables displayed.  Demographic variables were modeled as additional $\\beta$ effects as in (\\ref{theta}) and (\\ref{beta}). \\label{demo_effects}"}
+
+# based on postprocess_stan_hier_data.R and make_paper_figure_2.R
+library(tidyverse)
+library(ggplot2)
+
+load('../data/stan_postprocess_demos_t.rdata')
+
+fe <- effects %>% filter(variable == 'mu', evidence != 'baseline') %>%
+      select(mean, evidence, X2.5., X97.5.) %>%
+      mutate(evidence=factor(evidence, levels=c("physicalDNA", 
+                                                "physicalNon-DNA", 
+                                                "witnessYes Witness", 
+                                                "historyRelated", 
+                                                "historyUnrelated",
+                                                "femaleTRUE",
+                                                "nonwhiteTRUE",
+                                                "hispanicTRUE")))
+
+effects_x_axis <- scale_x_discrete(breaks=c("physicalDNA", 
+                                             "physicalNon-DNA", 
+                                             "witnessYes Witness", 
+                                             "historyRelated", 
+                                             "historyUnrelated",
+                                             "femaleTRUE",
+                                             "nonwhiteTRUE",
+                                             "hispanicTRUE"), 
+                                     labels=c("DNA \nphysical \nevidence", 
+                                              "Non-DNA \nphysical \nevidence",  
+                                              "Witness \npresent", 
+                                              "Related \nprior crime", 
+                                              "Unrelated \nprior crime",
+                                              "Female -\nMale",
+                                              "Non-white -\nWhite",
+                                              "Hispanic -\nNon-hispanic"))
+plt_1 <- ggplot(data=fe) +
+  geom_pointrange(aes(x=evidence, y=mean, ymin=X2.5., ymax=X97.5.), color=color_conf, size=1.) + 
+  effects_x_axis +
+  coord_cartesian(ylim=c(-10,40)) +
+  ylab("Confidence in Guilt (points)") +
+  xlab("Effects") +
+  geom_vline(xintercept=1.5, colour='grey') +
+  geom_vline(xintercept=2.5, colour='grey') +
+  geom_vline(xintercept=3.5, colour='grey') +
+  geom_vline(xintercept=4.5, colour='grey') +
+  geom_hline(yintercept=0.0, colour='grey') + 
+  th +
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(1), color='black'))
+plt_1
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=8, fig.cap="Comparison of sources of model variance. Points indicate posterior means of variance parameters. Lines indicate 95\\% credible intervals. Boxplots indicate variability of variance parameters across scenarios. Columns correspond to model variance parameters $\\tau^2$, $\\eta^2$, and $\\sigma^2$, respectively. \\label{model_variance_comparison}"}
+
+load('../data/stan_postprocess_sv_t.rdata')
+
+variance_comparison <- effects %>%
+  filter(variable %in% c('eta', 'tau', 'sigma'), (evidence=='baseline') | (variable == 'sigma')) %>%
+  select(X2.5., X50., X97.5., variable, scenario, group) %>%
+  mutate(variable = factor(variable, levels=c('eta', 'tau', 'sigma')))
+
+plt_5 <- ggplot() +
+  geom_pointrange(data=variance_comparison %>% filter(variable %in% c('eta', 'sigma')),
+                  aes(x=variable, y=X50., ymin=X2.5., ymax=X97.5., color=group),
+                  position=position_dodge(width=0.5), size=1) +
+  geom_boxplot(data=variance_comparison %>% filter(variable=='tau'),
+               aes(x=variable, y=X50., color=group), lwd=1, fatten=1, 
+               position=position_dodge(width=0.85)) +
+  variance_x_axis +
+  group_color_scale +
+  ylim(0, 50) +
+  ylab("Standard Deviation (points)") + 
+  xlab("Variance") +
+  th +
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(1), color='black'),
+    legend.position = c(0.8, 0.8)
+  )
+plt_5
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=8, fig.cap="Pairwise correlations for baseline effects across all outcome types. Includes in addition data for the likelihood question (cp. Figure 4C). \\label{baseline_correlations}"}
+load('../data/stan_postprocess_mv_t.rdata')
+
+outcomes <- levels(effects$outcome)
+Nr <- length(outcomes)
+releveler <- function(x) {
+  # replace outcome numbers with names
+  xfac <- factor(x, levels=1:length(outcomes), labels=outcomes)
+  
+  # now reorder levels so plot looks right
+  factor(as.character(xfac), levels=c("rating", "rate_punishment", "rate_outrage", "rate_threat", "rate_threat_2", "guilty"))
+}
+corrs <- effects %>% filter(grepl('Omega', variable)) %>% 
+                     separate(variable, into=c("variable", "outcome1", "outcome2")) %>%
+                     mutate_at(c("outcome1", "outcome2"), releveler) %>%
+                     filter(outcome1 != 'guilty', outcome2 != 'guilty') %>%
+                     filter(evidence=='baseline') %>% 
+                     unite(col=contrast, outcome1, outcome2, sep='-') %>%
+                     mutate(contrast=factor(contrast, levels=outcome_corr_levels,
+                                                      labels=outcome_corr_labels))
+
+plt_3 <- ggplot(data = corrs) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_pointrange(aes(x=contrast, y=X50., ymin=X2.5., ymax=X97.5.)) + 
+  ylab('Baseline Correlation') +
+  xlab('Outcome Pair') +
+  coord_cartesian(ylim=c(-1,1)) +
+  th +
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(0.8), color='black')
+  )
+plt_3  
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=8, fig.cap="Correlations between case strength and deserved punishment for all model effects across groups (cp. Figure 4D). \\label{all_group_correlations}"}
+
+load('../data/stan_postprocess_2v_t.rdata')
+
+plt_4 <- ggplot(data=(effects %>% filter(grepl('Omega', variable)))) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_pointrange(aes(x=evidence, y=X50., ymin=X2.5., ymax=X97.5., color=group), 
+                         position=position_dodge(width = 0.5)) + 
+  xlab('Evidence') + ylab('\nConfidence in Guilt /\nPunishment Correlation') +
+  group_color_scale +
+  evidence_plus_baseline_x_axis +
+  th + 
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(1), color='black'),
+    legend.position=c(0.15, 0.2),
+    legend.box.background = element_rect(fill=alpha("white", 0.75), color=NULL, linetype=NULL)
+  )
+plt_4
+```
+
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.height=4, fig.width = 8, fig.cap="Convergence diagnostic for MCMC fitting procedure for the single outcome model. Box plots show Gelman-Rubin statistics ($\\hat{R}$) for each of the variables in the model. Color indicates sample groups, which were fit using separate models. Values $\\hat{R} < 1.1$ are typically taken to represent satisfactory convergence. For variable definitions, see (\\ref{rating}) - (\\ref{nu}). \\label{sv_rhat}"}
+library(tidyverse)
+library(kableExtra)
+
+load('../data/stan_postprocess_sv_t.rdata')
+
+plt <- ggplot(effects) + 
+  geom_boxplot(aes(y=Rhat, x=variable, color=group)) +
+  group_color_scale +
+  labs(title="Convergence diagnostics:\nSingle response model", size=rel(3)) +
+  th + 
+  theme(legend.position=c(0.68, 0.75))
+plt
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.height=4, fig.width = 8, fig.cap="Convergence diagnostic for MCMC fitting procedure for the two-outcome model. Box plots show Gelman-Rubin statistics ($\\hat{R}$) for each of the variables in the model. Color indicates sample groups, which were fit using separate models. Values $\\hat{R} < 1.1$ are typically taken to represent satisfactory convergence. For variable definitions, see (\\ref{rating_m}) - (\\ref{nu_m}). \\label{2v_rhat}"}
+library(tidyverse)
+library(kableExtra)
+
+load('../data/stan_postprocess_2v_t.rdata')
+
+eff_prettied <- effects %>% mutate(variable=str_extract(variable, "\\w*(?=\\.|$)"))
+
+plt <- ggplot(eff_prettied) + 
+  geom_boxplot(aes(y=Rhat, x=variable, color=group)) +
+  group_color_scale +
+  labs(title="Convergence diagnostics:\nTwo-response model", size=rel(3)) +
+  th + 
+  theme(legend.position=c(0.78, 0.75))
+plt
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.height=4, fig.width = 8, fig.cap="Convergence diagnostic for MCMC fitting procedure for the multi-outcome model. Box plots show Gelman-Rubin statistics ($\\hat{R}$) for each of the variables in the model. Color indicates sample groups, which were fit using separate models. Values $\\hat{R} < 1.1$ are typically taken to represent satisfactory convergence. For variable definitions, see (\\ref{rating_m}) - (\\ref{nu_m}). \\label{mv_rhat}"}
+library(tidyverse)
+library(kableExtra)
+
+load('../data/stan_postprocess_mv_t.rdata')
+
+eff_prettied <- effects %>% mutate(variable=str_extract(variable, "\\w*(?=\\.|$)"))
+
+plt <- ggplot(eff_prettied) + 
+  geom_boxplot(aes(y=Rhat, x=variable, color=group)) +
+  group_color_scale +
+  labs(title="Convergence diagnostics:\nAll-response model", size=rel(3)) +
+  th + 
+  theme(legend.position=c(0.7, 0.75))
+plt
+```
+
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=13, fig.height=4.5, fig.cap="Same as Figure 2, but for models with Student t distributions replaced by normal distributions.\\label{fig_2_norm}"}
+
+source('../ggplot_setup.R')
+load('../data/stan_postprocess_sv_norm.rdata')
+effects <- effects %>% filter(group=='mturk')
+dat <- dat %>% filter(group=='mturk')
+
+############### Panel 1: Effect sizes for confidence ##################################
+# get evidence effects
+fe <- effects %>% filter(variable == 'mu', evidence != 'baseline') %>%
+      select(mean, evidence, X2.5., X97.5.) %>%
+      mutate(evidence=factor(evidence, levels=c("physicalDNA", 
+                                                "physicalNon-DNA", 
+                                                "witnessYes Witness", 
+                                                "historyRelated", 
+                                                "historyUnrelated")))
+
+plt_1 <- ggplot(data=fe) +
+  geom_pointrange(aes(x=evidence, y=mean, ymin=X2.5., ymax=X97.5.), color=color_conf, size=1.) + 
+  evidence_x_axis +
+  coord_cartesian(ylim=c(0,40)) +
+  labs(title="A") +
+  ylab("Confidence in Guilt (points)") +
+  xlab("Evidence Effects") +
+  geom_vline(xintercept=1.5, colour='grey') +
+  geom_vline(xintercept=2.5, colour='grey') +
+  geom_vline(xintercept=3.5, colour='grey') +
+  geom_vline(xintercept=4.5, colour='grey') +
+  th +
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(1), color='black'))
+
+
+############### Panel 2: Crime effects ##################################
+# get scenario effects
+se <- effects %>% filter(variable == 'gamma', evidence == 'baseline') %>% 
+                  select(scenario, mean, group) %>%
+                  mutate(outcome='rating')
+
+plt_2 <- ggplot(data = se, aes(x=group, y=mean)) +
+  geom_boxplot(aes(color=group), lwd=1, fatten=2.5, outlier.size=0, outlier.stroke=0) +
+  geom_point(position=position_jitter(width=0.2), size=rel(4), aes(color=group), alpha=0.5) +
+  group_x_axis +
+  group_color_scale +
+  group_fill_scale +
+  xlab("Crime Effect") +
+  coord_cartesian(ylim=c(0,40)) +
+  labs(title="B", size=rel(3)) +
+  ylab("Confidence") +
+  th +
+  theme(
+    plot.margin=unit(c(5.5, 20, 5.5, 5.5), "points"),
+    axis.line.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.ticks.y = element_blank())
+
+############### Panel 3: Illustration of range of confidences ##################################
+# calculate mean rating for session and evidence combinations
+sc_means <- dat %>% group_by(scenario, physical, history, witness) %>% 
+                    summarise(rating=mean(rating)) %>%
+                    arrange(scenario, physical, witness, history) %>%
+                    ungroup()
+
+# get unique variable code for each evidence combination
+ev_codes <- sc_means %>% select(physical, witness, history) %>% 
+                         distinct(physical, witness, history) %>%
+                         mutate(code=as.factor(row_number()))
+
+# add code column to scenario means
+sc_means <- sc_means %>% merge(ev_codes) %>% arrange(code, scenario)
+
+# calculate model prediction
+# get mean values of coefficients across scenarios
+betas <- effects %>% filter(variable == 'gamma') %>% 
+         select(scenario, evidence, mean) %>%
+         group_by(evidence) %>%
+         summarise(effect=mean(mean)) %>%
+         arrange(evidence)
+
+# generate model matrix for predictions         
+Xmat <- model.matrix(form, ev_codes)
+colnames(Xmat)[1] <- 'baseline'
+Xmat <- Xmat[, sort(colnames(Xmat), index.return=TRUE)$ix]
+
+# remove baseline, calculate evidence
+Xmat_no_baseline <- Xmat[,2:dim(Xmat)[2]]
+betas_no_baseline <- betas %>% filter(evidence != 'baseline')
+
+# mean evidence per scenario
+pred_evidence <- data.frame(code=ev_codes$code, 
+                            evidence=Xmat_no_baseline %*% betas_no_baseline$effect) %>%
+                 merge(sc_means) 
+
+# mean rating per scenario
+mean_by_scenario <- dat %>% group_by(scenario) %>% 
+                    summarise(sc_mean=mean(rating)) %>%
+                    ungroup()
+
+# prediction dataframe
+pred_evidence <- pred_evidence %>% merge(mean_by_scenario)
+
+plt_3 <- ggplot(data=pred_evidence) +
+  geom_point(aes(x=evidence, y=rating, color=sc_mean), size=3, alpha=0.5) +
+  geom_smooth(aes(x=evidence, y=rating), color=color_conf, method='lm', formula=y~x) +
+  xlab("Weight of Model \nEvidence (points)") +
+  coord_cartesian(xlim=c(-5, 70), ylim=c(0,100)) +
+  labs(title="C", size=rel(3)) +
+  ylab("Confidence in Guilt (observed)") +
+  th
+
+############### Combine into a single figure ##################################
+# make a list of panels
+plt_list <- list(plt_1, plt_2, plt_3)
+
+# convert to grobs
+grob_list <- lapply(plt_list, ggplotGrob)
+
+# make sure axes align
+max_heights <- do.call(unit.pmax, lapply(grob_list, function(x) {x$heights}))
+grob_list <- lapply(grob_list, function(x) {x$heights <- max_heights; x})
+
+# arrange with differing widths
+plt_all <- do.call(arrangeGrob, c(grob_list, ncol=3, widths=list(c(1.1, 0.5, 1.25))))
+grid.draw(plt_all)
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=13, fig.height=10.5, fig.cap="Same as Figure 3, but for models with Student t distributions replaced by normal distributions.\\label{fig_3_norm}"}
+
+source('../ggplot_setup.R')
+load('../data/stan_postprocess_sv_norm.rdata')
+
+############### Panel 1: Effect sizes for confidence ##################################
+# get evidence effects
+fe <- effects %>% filter(variable == 'mu', evidence != 'baseline') %>%
+      select(mean, evidence, X2.5., X97.5., group) %>%
+      mutate(evidence=factor(evidence, levels=c("physicalDNA", 
+                                                "physicalNon-DNA", 
+                                                "witnessYes Witness", 
+                                                "historyRelated", 
+                                                "historyUnrelated")))
+
+plt_1 <- ggplot(data=fe) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_pointrange(aes(x=evidence, y=mean, ymin=X2.5., ymax=X97.5., color=group), size=1.,
+                  position=position_dodge(width = 0.75)) + 
+  evidence_x_axis +
+  group_color_scale +
+  coord_cartesian(ylim=c(-10,60)) +
+  labs(title="A") +
+  ylab("Confidence in Guilt (points)") +
+  xlab("Evidence Effects") +
+  geom_vline(xintercept=1.5, colour='grey') +
+  geom_vline(xintercept=2.5, colour='grey') +
+  geom_vline(xintercept=3.5, colour='grey') +
+  geom_vline(xintercept=4.5, colour='grey') +
+  th + 
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(1), color='black')
+  )
+
+############### Panel 2: Baseline effects ##################################
+# get scenario effects
+se <- effects %>% filter(variable == 'gamma', evidence == 'baseline') %>% 
+                  select(scenario, mean, group) %>%
+                  mutate(outcome='rating')
+
+plt_2 <- ggplot(data = se, aes(x=group, y=mean)) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_boxplot(aes(color=group), lwd=1, fatten=1, outlier.size=0, outlier.stroke=0) +
+  # geom_point(position=position_jitter(width=0.2), size=rel(2), aes(color=group), alpha=0.5) +
+  group_x_axis +
+  group_color_scale +
+  group_fill_scale +
+  xlab("Crime Effect") +
+  coord_cartesian(ylim=c(-10,60)) +
+  labs(title="B", size=rel(3)) +
+  ylab("Confidence") +
+  th +
+  theme(
+    axis.line.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.position=c(-0.5,1),
+    legend.justification=c(0,1))
+    
+
+############### Panel 3: Illustration of range of confidences ##################################
+# calculate mean rating for session and evidence combinations
+sc_means <- dat %>% group_by(scenario, physical, history, witness, group) %>% 
+                    summarise(rating=mean(rating)) %>%
+                    arrange(scenario, physical, witness, history) %>%
+                    ungroup()
+
+# get unique variable code for each evidence combination
+ev_codes <- sc_means %>% select(physical, witness, history) %>% 
+                         distinct(physical, witness, history) %>%
+                         mutate(code=as.factor(row_number()))
+
+# add code column to scenario means
+sc_means <- sc_means %>% merge(ev_codes) %>% arrange(code, scenario)
+
+# calculate model prediction
+# get mean values of coefficients across scenarios
+betas <- effects %>% filter(variable == 'gamma') %>% 
+         select(scenario, evidence, mean, group) %>%
+         group_by(evidence, group) %>%
+         summarise(effect=mean(mean)) %>%
+         arrange(evidence)
+
+# generate model matrix for predictions         
+Xmat <- model.matrix(form, ev_codes)
+colnames(Xmat)[1] <- 'baseline'
+Xmat <- Xmat[, sort(colnames(Xmat), index.return=TRUE)$ix]
+
+# remove baseline, calculate evidence
+Xmat_no_baseline <- Xmat[,2:dim(Xmat)[2]]
+betas_no_baseline <- betas %>% filter(evidence != 'baseline')
+
+# mean evidence per code
+pred_evidence <- betas_no_baseline %>% group_by(group) %>% 
+                                       do(data.frame(code=ev_codes$code, 
+                                             evidence=Xmat_no_baseline %*% .$effect)) 
+# mean rating per code
+mean_by_code <- dat %>% merge(ev_codes) %>% group_by(group, code) %>% 
+                    summarise(code_mean=mean(rating)) %>%
+                    ungroup()
+
+# prediction dataframe
+pred_evidence <- pred_evidence %>% merge(mean_by_code)
+
+plt_3 <- ggplot(data=pred_evidence) +
+  geom_point(aes(x=evidence, y=code_mean, color=group), size=3, alpha=0.5) +
+  geom_smooth(aes(x=evidence, y=code_mean, color=group), method='lm', formula=y~x) +
+  group_color_scale +
+  xlab("Weight of Model \nEvidence (points)") +
+  coord_cartesian(xlim=c(0, 85), ylim=c(0,100)) +
+  labs(title="C", size=rel(3)) +
+  ylab("Confidence in Guilt (observed)") +
+  th 
+
+############### Panel 4: Evidence vs Baseline #################################
+eff_slopes <- effects %>% filter(variable=='gamma') %>%
+  group_by(scenario, group) %>%
+  filter(evidence != 'baseline') %>%
+  summarise(slope=mean(mean))
+
+eff_baselines <- effects %>% filter(variable=='gamma', evidence=='baseline') %>%
+  select(-evidence) %>%
+  group_by(scenario, group) %>%
+  rename(baseline=mean) %>%
+  select(baseline, scenario, group)
+
+eff_slope_and_baseline <- merge(eff_baselines, eff_slopes)
+
+plt_4 <- ggplot(data=eff_slope_and_baseline) +
+  geom_smooth(aes(x=baseline, y=slope), method=lm, color="black", fill="black") +
+  geom_point(aes(x=baseline, y=slope, color=group), size=4) + 
+  group_color_scale +
+  xlab('Crime') + ylab('Evidence') +
+  labs(title="D", size=rel(3)) +
+  th
+
+############### Combine into a single figure ##################################
+# make a list of panels
+plt_list <- list(plt_1, plt_2, plt_3, plt_4)
+
+# convert to grobs
+grob_list <- lapply(plt_list, ggplotGrob)
+
+# make sure axes align
+max_heights <- do.call(unit.pmax, lapply(grob_list, function(x) {x$heights}))
+grob_list <- lapply(grob_list, function(x) {x$heights <- max_heights; x})
+
+# arrange with differing widths
+lay <- rbind(c(1, 1, 2),
+             c(3, 4, NA))
+plt_all <- do.call(arrangeGrob, c(grob_list, ncol=3, layout_matrix=list(lay),
+                                  widths=list(c(0.55, 0.55, 0.3))))
+grid.draw(plt_all)
+```
+
+```{r message=FALSE, echo=FALSE, warning=FALSE, fig.width=13, fig.height=10.5, fig.cap="Same as Figure 4, but for models with Student t distributions replaced by normal distributions.\\label{fig_4_norm}"}
+source('../ggplot_setup.R')
+load('../data/stan_postprocess_mv_norm.rdata')
+
+############### Panel 1: mTurk effects by outcome type ##################################
+# get evidence effects
+fe <- effects %>% filter(variable == 'mu', evidence != 'baseline') %>%
+      select(mean, evidence, X2.5., X97.5., group, outcome) %>%
+      mutate(evidence=factor(evidence, levels=c("physicalDNA", 
+                                                "physicalNon-DNA", 
+                                                "witnessYes Witness", 
+                                                "historyRelated", 
+                                                "historyUnrelated"))) %>%
+      mutate(outcome=factor(outcome, levels=c("rating", 
+                                              "rate_punishment", 
+                                              "rate_outrage", 
+                                              "rate_threat",
+                                              "rate_threat_2"))) %>%
+     filter(outcome != "rate_threat")
+
+plt_1 <- ggplot(data=fe) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_pointrange(aes(x=evidence, y=mean, ymin=X2.5., ymax=X97.5., color=outcome), size=1.,
+                  position=position_dodge(width = 0.75)) + 
+  evidence_x_axis +
+  outcome_color_scale +
+  coord_cartesian(ylim=c(0,100)) +
+  labs(title="A") +
+  ylab("Effect Size (points)") +
+  xlab("Evidence Effects") +
+  geom_vline(xintercept=1.5, colour='grey') +
+  geom_vline(xintercept=2.5, colour='grey') +
+  geom_vline(xintercept=3.5, colour='grey') +
+  geom_vline(xintercept=4.5, colour='grey') +
+  th + 
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(1), color='black')
+  )
+
+
+############### Panel 2: Baseline effects ##################################
+# get scenario effects
+se <- effects %>% filter(variable == 'gamma', evidence == 'baseline') %>% 
+                  select(scenario, mean, group, outcome) %>%
+      mutate(outcome=factor(outcome, levels=c("rating", 
+                                              "rate_punishment", 
+                                              "rate_outrage", 
+                                              "rate_threat",
+                                              "rate_threat_2"))) %>%
+     filter(outcome != "rate_threat")
+
+plt_2 <- ggplot(data = se, aes(x=outcome, y=mean)) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_boxplot(aes(color=outcome), lwd=1, fatten=1, outlier.size=0, outlier.stroke=0) +
+  outcome_x_axis +
+  outcome_color_scale +
+  xlab("Crime Effect") +
+  coord_cartesian(ylim=c(0,100)) +
+  labs(title="B", size=rel(3)) +
+  ylab("Confidence") +
+  th +
+  theme(
+    axis.line.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    legend.position=c(-0.5,1),
+    legend.justification=c(0,1))
+    
+############### Panel 3: Punishment and case strength effect correlations ##################################
+outcomes <- levels(effects$outcome)
+Nr <- length(outcomes)
+releveler <- function(x) {
+  # replace outcome numbers with names
+  xfac <- factor(x, levels=1:length(outcomes), labels=outcomes)
+  
+  # now reorder levels so plot looks right
+  factor(as.character(xfac), levels=c("rating", "rate_punishment", "rate_outrage", "rate_threat", "rate_threat_2"))
+}
+corrs <- effects %>% filter(grepl('Omega', variable)) %>% 
+                     separate(variable, into=c("variable", "outcome1", "outcome2")) %>%
+                     mutate_at(c("outcome1", "outcome2"), releveler) %>%
+                     filter(evidence=='baseline') %>% 
+                     filter(outcome1 != "rate_threat", outcome2 != "rate_threat") %>%
+                     unite(col=contrast, outcome1, outcome2, sep='-') %>%
+                     mutate(contrast=factor(contrast, levels=outcome_corr_levels,
+                                                      labels=outcome_corr_labels))
+
+plt_3 <- ggplot(data = corrs) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_pointrange(aes(x=contrast, y=X50., ymin=X2.5., ymax=X97.5.)) + 
+  ylab('Crime Effect Correlation') +
+  xlab('Outcome Pair') +
+  labs(title="C", size=rel(3)) +
+  coord_cartesian(ylim=c(-1,1)) +
+  th +
+  theme(
+    axis.text.x = element_text(hjust = 0.5, size=rel(0.8), color='black')
+    # axis.title.x = element_blank()
+  )
+  
+
+############### Panel 4: Punishment and case strength effect correlations ##################################
+load('../data/stan_postprocess_2v_norm.rdata')
+
+plt_4 <- ggplot(data=(effects %>% filter(grepl('Omega', variable), evidence=='baseline'))) +
+  geom_hline(yintercept=0, colour='grey') +
+  geom_pointrange(aes(x=evidence, y=X50., ymin=X2.5., ymax=X97.5., color=group), 
+                         position=position_dodge(width = 0.5)) + 
+  xlab('Evidence') + ylab('\nConfidence in Guilt /\nPunishmnet Correlation') +
+  group_color_scale +
+  evidence_plus_baseline_x_axis +
+  labs(title="D", size=rel(3)) +
+  th + 
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    plot.margin=unit(c(25.5, 100.5, 25.5, 0), "points"),
+    legend.position=c(1.1, 0.8)
+  )
+
+############### Combine into a single figure ##################################
+# make a list of panels
+plt_list <- list(plt_1, plt_2, plt_3, plt_4)
+
+# convert to grobs
+grob_list <- lapply(plt_list, ggplotGrob)
+
+# make sure axes align
+max_heights <- do.call(unit.pmax, lapply(grob_list, function(x) {x$heights}))
+grob_list <- lapply(grob_list, function(x) {x$heights <- max_heights; x})
+
+# arrange with differing widths
+lay <- rbind(c(1, 1, 2, NA),
+             c(3, 3, 4, 4))
+plt_all <- do.call(arrangeGrob, c(grob_list, ncol=4, layout_matrix=list(lay),
+                                  widths=list(c(0.55, 0.55, 0.4, 0.4))))
+
+grid.draw(plt_all)
+```
+\newpage
+
+# Supplementary References
