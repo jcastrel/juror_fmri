@@ -1,4 +1,4 @@
-# make figure showing predicted versus actual ratings for mTurk group
+# supplementary figure 2 from paper
 library(tidyverse)
 library(grid)
 library(gridExtra)

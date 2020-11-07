@@ -1,4 +1,4 @@
-# make figure showing predicted versus actual ratings for mTurk group
+# make figure showing: (1.) task schematic, (2.) evidence & scenario effects plot, (3.)correlation plot, & (4.) PCA plot
 library(tidyverse)
 library(grid)
 library(gridExtra)
@@ -6,8 +6,8 @@ library(rstan)
 library(magick)
 library(gtable)
 library(gridBase)
-library(factoextra)
-library(ggpubr)
+#library(factoextra)
+#library(ggpubr)
 
 source('ggplot_setup.R')
 load('data/stan_postprocess_2v_t.rdata')
