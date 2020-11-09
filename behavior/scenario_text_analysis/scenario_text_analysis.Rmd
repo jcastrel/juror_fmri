@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, dev = c('png','pdf'))
 ```
 
 ##Juror Crime Scenarios Sentiment Analysis {.tabset}
@@ -164,8 +164,8 @@ afinn_word_counts %>%
   coord_flip() + th
 ```
 
-Plot word counts - Bing
-```{r, dpi=300}
+Plot word counts - Bing (Supp Fig. 3)
+```{r, dpi=300, fig.path='../figs/', label='supp_fig_3', fig.ext='pdf'}
 bing_word_counts %>%
   group_by(sentiment) %>%
   top_n(10) %>%

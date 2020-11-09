@@ -19,7 +19,7 @@ devtools::session_info()
 ```
 
 ```
-## ─ Session info ──────────────────────────────────────────────────────────
+## ─ Session info ───────────────────────────────────────────────────────────────
 ##  setting  value                       
 ##  version  R version 3.5.1 (2018-07-02)
 ##  os       macOS  10.14.3              
@@ -29,45 +29,45 @@ devtools::session_info()
 ##  collate  en_US.UTF-8                 
 ##  ctype    en_US.UTF-8                 
 ##  tz       America/New_York            
-##  date     2020-10-02                  
+##  date     2020-11-09                  
 ## 
-## ─ Packages ──────────────────────────────────────────────────────────────
-##  package     * version date       lib source        
-##  assertthat    0.2.0   2017-04-11 [1] CRAN (R 3.5.0)
-##  backports     1.1.2   2017-12-13 [1] CRAN (R 3.5.0)
-##  callr         3.4.3   2020-03-28 [1] CRAN (R 3.5.1)
-##  cli           2.0.2   2020-02-28 [1] CRAN (R 3.5.2)
-##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.5.0)
-##  desc          1.2.0   2018-05-01 [1] CRAN (R 3.5.0)
-##  devtools      2.3.0   2020-04-10 [1] CRAN (R 3.5.1)
-##  digest        0.6.25  2020-02-23 [1] CRAN (R 3.5.2)
-##  ellipsis      0.3.0   2019-09-20 [1] CRAN (R 3.5.2)
-##  evaluate      0.11    2018-07-17 [1] CRAN (R 3.5.0)
-##  fansi         0.4.0   2018-10-05 [1] CRAN (R 3.5.0)
-##  fs            1.4.1   2020-04-04 [1] CRAN (R 3.5.1)
-##  glue          1.4.0   2020-04-03 [1] CRAN (R 3.5.1)
-##  htmltools     0.3.6   2017-04-28 [1] CRAN (R 3.5.0)
-##  knitr         1.20    2018-02-20 [1] CRAN (R 3.5.0)
-##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.5.0)
-##  memoise       1.1.0   2017-04-21 [1] CRAN (R 3.5.0)
-##  pkgbuild      1.0.6   2019-10-09 [1] CRAN (R 3.5.2)
-##  pkgload       1.0.2   2018-10-29 [1] CRAN (R 3.5.0)
-##  prettyunits   1.0.2   2015-07-13 [1] CRAN (R 3.5.0)
-##  processx      3.4.2   2020-02-09 [1] CRAN (R 3.5.2)
-##  ps            1.3.2   2020-02-13 [1] CRAN (R 3.5.2)
-##  R6            2.4.1   2019-11-12 [1] CRAN (R 3.5.2)
-##  Rcpp          1.0.3   2019-11-08 [1] CRAN (R 3.5.2)
-##  remotes       2.1.1   2020-02-15 [1] CRAN (R 3.5.2)
-##  rlang         0.4.5   2020-03-01 [1] CRAN (R 3.5.2)
-##  rmarkdown     1.10    2018-06-11 [1] CRAN (R 3.5.0)
-##  rprojroot     1.3-2   2018-01-03 [1] CRAN (R 3.5.0)
-##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.5.0)
-##  stringi       1.4.3   2019-03-12 [1] CRAN (R 3.5.2)
-##  stringr       1.4.0   2019-02-10 [1] CRAN (R 3.5.2)
-##  testthat      2.3.2   2020-03-02 [1] CRAN (R 3.5.2)
-##  usethis       1.6.0   2020-04-09 [1] CRAN (R 3.5.1)
-##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.5.0)
-##  yaml          2.2.0   2018-07-25 [1] CRAN (R 3.5.0)
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version date       lib source                      
+##  assertthat    0.2.0   2017-04-11 [1] CRAN (R 3.5.0)              
+##  backports     1.1.2   2017-12-13 [1] CRAN (R 3.5.0)              
+##  callr         3.4.3   2020-03-28 [1] CRAN (R 3.5.1)              
+##  cli           2.0.2   2020-02-28 [1] CRAN (R 3.5.2)              
+##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.5.0)              
+##  desc          1.2.0   2018-05-01 [1] CRAN (R 3.5.0)              
+##  devtools      2.3.0   2020-04-10 [1] CRAN (R 3.5.1)              
+##  digest        0.6.25  2020-02-23 [1] CRAN (R 3.5.2)              
+##  ellipsis      0.3.0   2019-09-20 [1] CRAN (R 3.5.2)              
+##  evaluate      0.14    2019-05-28 [1] CRAN (R 3.5.2)              
+##  fansi         0.4.0   2018-10-05 [1] CRAN (R 3.5.0)              
+##  fs            1.4.1   2020-04-04 [1] CRAN (R 3.5.1)              
+##  glue          1.4.0   2020-04-03 [1] CRAN (R 3.5.1)              
+##  htmltools     0.5.0   2020-06-16 [1] CRAN (R 3.5.1)              
+##  knitr         1.30.2  2020-10-16 [1] Github (yihui/knitr@398ff08)
+##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.5.0)              
+##  memoise       1.1.0   2017-04-21 [1] CRAN (R 3.5.0)              
+##  pkgbuild      1.0.6   2019-10-09 [1] CRAN (R 3.5.2)              
+##  pkgload       1.0.2   2018-10-29 [1] CRAN (R 3.5.0)              
+##  prettyunits   1.0.2   2015-07-13 [1] CRAN (R 3.5.0)              
+##  processx      3.4.2   2020-02-09 [1] CRAN (R 3.5.2)              
+##  ps            1.3.2   2020-02-13 [1] CRAN (R 3.5.2)              
+##  R6            2.4.1   2019-11-12 [1] CRAN (R 3.5.2)              
+##  remotes       2.1.1   2020-02-15 [1] CRAN (R 3.5.2)              
+##  rlang         0.4.5   2020-03-01 [1] CRAN (R 3.5.2)              
+##  rmarkdown     2.4     2020-09-30 [1] CRAN (R 3.5.1)              
+##  rprojroot     1.3-2   2018-01-03 [1] CRAN (R 3.5.0)              
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.5.0)              
+##  stringi       1.4.3   2019-03-12 [1] CRAN (R 3.5.2)              
+##  stringr       1.4.0   2019-02-10 [1] CRAN (R 3.5.2)              
+##  testthat      2.3.2   2020-03-02 [1] CRAN (R 3.5.2)              
+##  usethis       1.6.0   2020-04-09 [1] CRAN (R 3.5.1)              
+##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.5.0)              
+##  xfun          0.18    2020-09-29 [1] CRAN (R 3.5.1)              
+##  yaml          2.2.1   2020-02-01 [1] CRAN (R 3.5.2)              
 ## 
 ## [1] /Library/Frameworks/R.framework/Versions/3.5/Resources/library
 ```
@@ -158,8 +158,8 @@ sentiment_nrc
 ##  8        8     8     2            1       0     1     0        3        1
 ##  9        9     9     1            1       0     0     1        0        1
 ## 10       10    10     2            0       1     2     0        2        1
-## # … with 23 more rows, and 4 more variables: sadness <dbl>,
-## #   surprise <dbl>, trust <dbl>, sentiment <dbl>
+## # … with 23 more rows, and 4 more variables: sadness <dbl>, surprise <dbl>,
+## #   trust <dbl>, sentiment <dbl>
 ```
 
 Run sentiment analysis - afinn (AFINN Lexicon: http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html)
@@ -392,7 +392,7 @@ afinn_word_counts %>%
 
 ![](scenario_text_analysis_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
 
-Plot word counts - Bing
+Plot word counts - Bing (Supp Fig. 3)
 
 ```r
 bing_word_counts %>%
@@ -412,7 +412,7 @@ bing_word_counts %>%
 ## Selecting by n
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](../figs/supp_fig_3-1.pdf)<!-- -->
 
 Plot word counts - NRC
 
@@ -434,7 +434,7 @@ nrc_word_counts %>%
 ## Selecting by n
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 ###Reading Grade Level
 
@@ -482,7 +482,7 @@ ggcorrplot(corr, hc.order = FALSE, type = "lower", outline.color = "white",
    lab = TRUE)
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
 Sentiment from AFINN (N=32 scenarios)
 
@@ -493,7 +493,7 @@ ggcorrplot(corr, hc.order = FALSE, type = "lower", outline.color = "white",
    lab = TRUE)
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
 
 Sentiment from Bing (N=19 scenarios)
 
@@ -504,7 +504,7 @@ ggcorrplot(corr, hc.order = FALSE, type = "lower", outline.color = "white",
    lab = TRUE)
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 ###Sentiment Score Correlation Plots
 
@@ -526,7 +526,7 @@ ggscatter(all_data, x = "case_strength_mean", y = "sentiment",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 ```r
 #sentiment - punishment
@@ -544,7 +544,7 @@ ggscatter(all_data, x = "punishment_mean", y = "sentiment",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-22-2.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-21-2.png)<!-- -->
 
 AFINN Sentiment
 
@@ -564,7 +564,7 @@ ggscatter(afinn_data, x = "case_strength_mean", y = "sentiment_score",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 ```r
 #sentiment - punishment
@@ -582,7 +582,7 @@ ggscatter(afinn_data, x = "punishment_mean", y = "sentiment_score",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-23-2.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-22-2.png)<!-- -->
 
 Bing Sentiment
 
@@ -602,7 +602,7 @@ ggscatter(bing_data, x = "case_strength_mean", y = "sentiment",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
 
 ```r
 #sentiment - punishment
@@ -620,7 +620,7 @@ ggscatter(bing_data, x = "punishment_mean", y = "sentiment",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-24-2.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-23-2.png)<!-- -->
 
 ###Word Count Correlation Plots
 
@@ -640,7 +640,7 @@ ggscatter(all_data, x = "case_strength_mean", y = "words",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
 
 ```r
 #word count - punishment
@@ -658,7 +658,7 @@ ggscatter(all_data, x = "punishment_mean", y = "words",
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-25-2.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-24-2.png)<!-- -->
 
 ###Robust Correlations & Regression
 
@@ -687,7 +687,7 @@ ggcorrplot(rob_corr, hc.order = FALSE, type = "lower", outline.color = "white",
    lab = TRUE)
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
 
 
 ```r
@@ -863,7 +863,7 @@ legend(20, 60, c("LS", "Huber","LTS","LMS",
            col = c(1, 2, 3, 4, 5, 6))
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
 
 quantile & robust regression
 
@@ -922,5 +922,5 @@ ggplot(data=all_data, aes(x=punishment_mean, y=words)) +
 ## `geom_smooth()` using formula 'y ~ x'
 ```
 
-![](scenario_text_analysis_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+![](scenario_text_analysis_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
