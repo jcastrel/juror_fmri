@@ -1,0 +1,418 @@
+---
+title: "Juror Crime Scenarios - Scenario Text Analysis"
+author: "Jaime Castrellon"
+date: "7/24/2020"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dev = c('png','pdf'))
+```
+
+##Juror Crime Scenarios Sentiment Analysis {.tabset}
+
+###Build, packages, & data
+Session info
+```{r}
+devtools::session_info()
+```
+Packages
+```{r results='hide', message=FALSE, warning=FALSE}
+library(tidytext)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(ggcorrplot)
+library(ggpubr)
+library(wordcloud)
+library(quanteda)
+#robust correlation & regression
+library(robcor)
+library(MASS)
+library(quantreg)
+```
+Data
+```{r}
+data <- read.csv(file="./scenario_classification.csv", header=TRUE, sep = ",", stringsAsFactors=FALSE)
+
+data <- within(data, {
+              crime_type <- factor(crime_type)
+              category <- factor(category)
+              jrl <- factor(jrl)
+              class <- factor(class)
+})
+th <- theme_classic()
+```
+Set seed (for reproducible results) 
+```{r}
+set.seed(1000)
+```
+
+###Sentiment Analysis
+Organize data
+```{r}
+crimes <- data %>%
+  mutate(index = scenario) %>%
+  ungroup()
+
+tidy_crimes <- crimes %>%
+  unnest_tokens(word, crime_description, token = "words")
+
+#quick word count
+word_count <- tidy_crimes %>%
+  group_by(scenario) %>%
+  summarise(count = n())
+```
+
+Run sentiment analysis - NRC
+```{r}
+sentiment_nrc <- tidy_crimes %>%
+  anti_join(stop_words) %>%
+  group_by(scenario) %>% 
+  inner_join(get_sentiments("nrc"), by = "word") %>%
+  count(index = index, sentiment) %>% 
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(sentiment = positive - negative)
+sentiment_nrc
+```
+
+Run sentiment analysis - afinn (AFINN Lexicon: http://www2.imm.dtu.dk/pubdb/pubs/6010-full.html)
+```{r}
+sentiment_afinn <- tidy_crimes %>%
+  anti_join(stop_words) %>%
+  group_by(scenario) %>% 
+  inner_join(get_sentiments("afinn"), by = "word") %>%
+  summarise(sentiment_score = sum(score))
+sentiment_afinn
+```
+
+Run sentiment analysis - Bing:
+```{r}
+sentiment_bing <- tidy_crimes %>%
+  anti_join(stop_words) %>%
+  group_by(scenario) %>% 
+  inner_join(get_sentiments("bing"), by = "word") %>%
+  count(index = index, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>% 
+  mutate(sentiment = positive - negative)
+sentiment_bing
+```
+
+###Sentiment Distributions
+Plot range of sentiment scores
+```{r, dpi=300}
+ggplot(sentiment_afinn, aes(x=sentiment_score)) + geom_histogram(binwidth = 1, color="black", fill="lightblue") + geom_vline(aes(xintercept=mean(sentiment_score)), color="blue", linetype="dashed", size=1)+th
+```  
+
+Plot w/density
+```{r, dpi=300}
+ggplot(sentiment_afinn, aes(x=sentiment_score)) + geom_histogram(aes(y=..density..), binwidth = 1, color="black", fill="lightblue") + geom_vline(aes(xintercept=mean(sentiment_score)), color="blue", linetype="dashed", size=1) + geom_density(alpha=.2, fill="#FF6666") + th
+```
+
+###Sentiment Word counts
+
+afinn
+```{r}
+afinn_word_counts <- tidy_crimes %>%
+  inner_join(get_sentiments("afinn")) %>%
+  mutate(sentiment = ifelse(test = (score > 0), 
+                       yes = 'positive',
+                       no = ifelse(test = (score < 0), 
+                                   yes = 'negative',
+                                   no = NA))) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+afinn_word_counts
+```
+
+bing
+```{r}
+bing_word_counts <- tidy_crimes %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+bing_word_counts
+```
+
+nrc
+```{r}
+nrc_word_counts <- tidy_crimes %>%
+  inner_join(get_sentiments("nrc")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  filter(sentiment == 'positive' | sentiment == 'negative') %>%
+  ungroup()
+
+nrc_word_counts
+```
+
+Plot word counts - afinn
+```{r, dpi=300}
+afinn_word_counts %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE, colour = 'black', fill='black') +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip() + th
+```
+
+Plot word counts - Bing (Supp Fig. 3)
+```{r, dpi=300, fig.path='../figs/', label='supp_fig_4', fig.ext='pdf'}
+bing_word_counts %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE, colour = 'black', fill='black') +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip() + th
+```
+
+Plot word counts - NRC
+```{r, dpi=300}
+nrc_word_counts %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE, colour = 'black', fill='black') +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip() + th
+```
+
+###Reading Grade Level
+```{r, dpi=300}
+# word, sentence, and syllable counts, plus reading scores
+read_lvl <- data %>%
+  mutate(syllables = nsyllable(crime_description),
+         sentences = nsentence(crime_description),
+         words = ntoken(crime_description, remove_punct = TRUE),
+         fk_grade = 0.39*(words/sentences) + 11.8*(syllables/words) - 15.59) %>%
+  arrange(scenario)
+
+read_lvl <- dplyr::select(read_lvl,-c(2,3,4,5,6,7,8))
+```
+
+###Save the data
+```{r}
+#sentiment & word count
+all_data <- data %>%
+  #inner_join(sentiment, by = "scenario") %>%
+  inner_join(word_count, by = "scenario") %>%
+  inner_join(sentiment_nrc, by = "scenario") %>%
+  inner_join(read_lvl, by = "scenario")
+  
+write.csv(all_data,
+          file = "./scenario_classification_with_sentiment_scores.csv",
+          row.names = FALSE)
+
+
+afinn_data<-data %>%
+  inner_join(sentiment_afinn, by = 'scenario')
+
+bing_data<-data %>%
+  inner_join(sentiment_bing, by = 'scenario')
+```
+
+###Correlation Matrix
+Sentiment from NRC
+```{r, dpi=300, fig.width=10, fig.height=12}
+corr <- round(cor(all_data[7:25],method="spearman"), 3)
+
+ggcorrplot(corr, hc.order = FALSE, type = "lower", outline.color = "white",
+   lab = TRUE)
+```
+
+Sentiment from AFINN (N=32 scenarios)
+```{r, dpi=300, fig.width=5, fig.height=5}
+corr <- round(cor(afinn_data[7:9],method="spearman"), 3)
+
+ggcorrplot(corr, hc.order = FALSE, type = "lower", outline.color = "white",
+   lab = TRUE)
+```
+
+Sentiment from Bing (N=19 scenarios)
+```{r, dpi=300, fig.width=5, fig.height=5}
+corr <- round(cor(bing_data[7:12],method="spearman"), 3)
+
+ggcorrplot(corr, hc.order = FALSE, type = "lower", outline.color = "white",
+   lab = TRUE)
+```
+
+###Sentiment Score Correlation Plots
+
+NRC Sentiment
+```{r, dpi=300}
+#sentiment - case strength
+ggscatter(all_data, x = "case_strength_mean", y = "sentiment",
+   color = "black", shape = 21, size = 3,
+   add = "reg.line",
+   add.params = list(color = "blue", fill = "lightgray"),
+   conf.int = TRUE,
+   cor.coef = TRUE,
+   cor.coeff.args = list(method = "spearman", label.x = 3, label.sep = "\n")
+   ) + th
+
+#sentiment - punishment
+ggscatter(all_data, x = "punishment_mean", y = "sentiment",
+   color = "black", shape = 21, size = 3, # Points color, shape and size
+   add = "reg.line",  # Add regressin line
+   add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   ) + th
+```
+
+AFINN Sentiment
+```{r, dpi=300}
+#sentiment - case strength
+ggscatter(afinn_data, x = "case_strength_mean", y = "sentiment_score",
+   color = "black", shape = 21, size = 3,
+   add = "reg.line",
+   add.params = list(color = "blue", fill = "lightgray"),
+   conf.int = TRUE,
+   cor.coef = TRUE,
+   cor.coeff.args = list(method = "spearman", label.x = 3, label.sep = "\n")
+   ) + th
+
+#sentiment - punishment
+ggscatter(afinn_data, x = "punishment_mean", y = "sentiment_score",
+   color = "black", shape = 21, size = 3, # Points color, shape and size
+   add = "reg.line",  # Add regressin line
+   add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   ) + th
+```
+
+Bing Sentiment
+```{r, dpi=300}
+#sentiment - case strength
+ggscatter(bing_data, x = "case_strength_mean", y = "sentiment",
+   color = "black", shape = 21, size = 3,
+   add = "reg.line",
+   add.params = list(color = "blue", fill = "lightgray"),
+   conf.int = TRUE,
+   cor.coef = TRUE,
+   cor.coeff.args = list(method = "spearman", label.x = 3, label.sep = "\n")
+   ) + th
+
+#sentiment - punishment
+ggscatter(bing_data, x = "punishment_mean", y = "sentiment",
+   color = "black", shape = 21, size = 3, # Points color, shape and size
+   add = "reg.line",  # Add regressin line
+   add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   ) + th
+```
+
+###Word Count Correlation Plots
+```{r, dpi=300}
+#word count - case strength
+ggscatter(all_data, x = "case_strength_mean", y = "words",
+   color = "black", shape = 21, size = 3,
+   add = "reg.line",
+   add.params = list(color = "blue", fill = "lightgray"),
+   conf.int = TRUE,
+   cor.coef = TRUE,
+   cor.coeff.args = list(method = "spearman", label.x = 3, label.sep = "\n")
+   )
+
+#word count - punishment
+ggscatter(all_data, x = "punishment_mean", y = "words",
+   color = "black", shape = 21, size = 3, # Points color, shape and size
+   add = "reg.line",  # Add regressin line
+   add.params = list(color = "blue", fill = "lightgray"), # Customize reg. line
+   conf.int = TRUE, # Add confidence interval
+   cor.coef = TRUE, # Add correlation coefficient. see ?stat_cor
+   cor.coeff.args = list(method = "pearson", label.x = 3, label.sep = "\n")
+   )
+```
+
+###Robust Correlations & Regression
+```{r, dpi=300, fig.width=10, fig.height=12}
+#correlation matrix
+rob_corr <- round(robcor(all_data[7:25],method="quadrant"), 3)
+
+ggcorrplot(rob_corr, hc.order = FALSE, type = "lower", outline.color = "white",
+   lab = TRUE)
+```
+
+```{r, dpi=300}
+#robust regression
+#https://rpubs.com/dvallslanaquera/robust_regression
+
+pun_wc_mod <- rlm(words ~ punishment_mean, all_data, psi = psi.bisquare)
+summary(pun_wc_mod)
+#Linear
+fitLS <- lm(words ~ punishment_mean, data = all_data)
+summary(fitLS)
+#Huber Estimator
+fitH <- rlm(words ~ punishment_mean, data = all_data, k2 = 1.345)
+summary(fitH)
+#Least Mean Square
+fitLMS <- lqs(words ~ punishment_mean, data = all_data, method = "lms")
+summary(fitLMS)
+#Least Trimmed Square
+fitLTS <- lqs(words ~ punishment_mean, data = all_data, method = "lts")
+summary(fitLTS)
+#S-estimator (The "S" estimation method solves for the scale s such that the average of a function chi of the residuals divided by s is equal to a given constant.)
+fitS <- lqs(words ~ punishment_mean, data = all_data, method = "S")
+summary(fitS)
+#MM-estimator(Selecting method = "MM" selects a specific set of options which ensures that the estimator has a high breakdown point. The initial set of coefficients and the final scale are selected by an S-estimator with k0 = 1.548; this gives (for n≫p) breakdown point 0.5. The final estimator is an M-estimator with Tukey's biweight and fixed scale that will inherit this breakdown point provided c > k0; this is true for the default value of c that corresponds to 95% relative efficiency at the normal.)
+fitMM <- rlm(words ~ punishment_mean, data = all_data, method = "MM")
+summary(fitMM)
+
+#plot
+plot(y=all_data$words, x=all_data$punishment_mean,
+      xlab = "punishment", ylab = "word count", type = "p", 
+      pch = 20, cex = 1.5)
+abline(fitLS, col = 1) 
+abline(fitH, col = 2) 
+abline(fitLTS, col = 3) 
+abline(fitLMS, col = 4) 
+abline(fitS, col = 5) 
+abline(fitMM, col = 6) 
+legend(20, 60, c("LS", "Huber","LTS","LMS",
+                  "S-estimator","MM-estimator" ),
+           lty = rep(1, 6), bty = "n",
+           col = c(1, 2, 3, 4, 5, 6))
+```
+
+quantile & robust regression
+```{r, dpi=300}
+#quantile
+#http://www.alastairsanderson.com/R/tutorials/robust-regression-in-R/
+fitQuantileReg <- rq(words ~ punishment_mean, data=all_data)
+summary(fitQuantileReg)
+
+#robust
+fitRLM <- rlm(words ~ punishment_mean, data=all_data)
+summary(fitRLM)
+
+ggplot(data=all_data, aes(x=punishment_mean, y=words)) +
+  geom_point() +                                                   
+  geom_smooth(method="lm", aes(colour="lm"), se=FALSE) +
+  geom_smooth(method="rq", aes(colour="rq"), se=FALSE) +
+  geom_smooth(method="rlm", aes(colour="rlm"), se=FALSE) +
+  labs(colour=NULL) + theme_classic()
+```
+

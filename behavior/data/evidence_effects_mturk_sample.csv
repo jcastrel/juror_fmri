@@ -1,0 +1,21 @@
+﻿mean,evidence,X2.5.,X97.5.,group,outcome
+4.501396,physicalNon-DNA,2.75623012,6.39645,mturk,rate_outrage
+4.793929,physicalNon-DNA,3.6891012,5.891032,mturk,rate_punishment
+6.585689,physicalNon-DNA,3.57644546,9.588689,mturk,rate_threat_2
+34.580358,physicalNon-DNA,31.75037982,37.403161,mturk,rating
+5.314319,physicalDNA,3.63232311,6.994303,mturk,rate_outrage
+5.74363,physicalDNA,4.60955135,6.856662,mturk,rate_punishment
+3.332436,physicalDNA,-0.07377929,6.700925,mturk,rate_threat_2
+34.996022,physicalDNA,31.99818485,38.103758,mturk,rating
+2.188216,historyUnrelated,0.54967272,3.873973,mturk,rate_outrage
+2.391454,historyUnrelated,1.2864329,3.498913,mturk,rate_punishment
+3.759597,historyUnrelated,0.29581457,7.222933,mturk,rate_threat_2
+5.561013,historyUnrelated,4.41878202,6.661725,mturk,rating
+2.845318,historyRelated,1.1388042,4.558038,mturk,rate_outrage
+3.952108,historyRelated,2.91169151,4.968956,mturk,rate_punishment
+6.747144,historyRelated,3.70527736,9.776621,mturk,rate_threat_2
+12.99702,historyRelated,11.51770247,14.465154,mturk,rating
+3.186827,witnessYes Witness,1.69231163,4.655128,mturk,rate_outrage
+3.473211,witnessYes Witness,2.45887411,4.448316,mturk,rate_punishment
+4.659384,witnessYes Witness,1.80317676,7.3797,mturk,rate_threat_2
+20.839051,witnessYes Witness,18.82044647,22.798532,mturk,rating

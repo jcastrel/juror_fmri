@@ -1,0 +1,11 @@
+﻿mean,evidence,X2.5.,X97.5.,group,outcome
+4.9727064,physicalNon-DNA,1.00774901,8.909355,mri,rate_punishment
+34.964066,physicalNon-DNA,30.27849508,39.354879,mri,rating
+3.5989386,physicalDNA,-0.27301724,7.646645,mri,rate_punishment
+36.1830974,physicalDNA,30.03664168,42.545981,mri,rating
+-0.7559986,historyUnrelated,-4.56106651,3.263771,mri,rate_punishment
+4.2642698,historyUnrelated,-0.05343379,8.51854,mri,rating
+-0.1510244,historyRelated,-3.97786977,3.798264,mri,rate_punishment
+11.0251225,historyRelated,6.48166819,15.321946,mri,rating
+2.3788071,witnessYes Witness,-1.25847506,5.906806,mri,rate_punishment
+22.1853797,witnessYes Witness,18.56545339,25.956173,mri,rating

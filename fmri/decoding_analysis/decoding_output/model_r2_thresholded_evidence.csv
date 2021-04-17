@@ -1,0 +1,16 @@
+,event,model,r2
+0,evidence,extra_evidentiary,0.03259748230448711
+1,evidence,evidentiary,0.1157787145071082
+2,evidence,narrative,0.09004157259239864
+3,evidence,utility,0.04609582376012045
+4,evidence,affect,0.02434719795146656
+5,evidence,moral_judgment,0.011190681839374106
+6,evidence,exp_cult_recall_narrative,0.049395693847254285
+7,evidence,reading_narrative,0.06512739912289056
+8,evidence,wm_narrative,0.010588834103560818
+9,evidence,utility_probability,0.037993029928680366
+10,evidence,utility_value,0.01628152536948957
+11,evidence,moral_judgment_social,0.004768580096691011
+12,evidence,moral_judgment_mj,0.006481863511252461
+13,evidence,exp_cult_recall_narrative_cult_id_bias,0.0006060573696535787
+14,evidence,exp_cult_recall_narrative_recall,0.04184193395170732
