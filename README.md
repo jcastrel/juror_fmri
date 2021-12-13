@@ -1,5 +1,5 @@
 # juror_fmri
-Analysis scripts and code associated with the manuscript "Neural evidence for narrative-based processing of evidence and bias in juror decision making." [Preprint Link](https://www.biorxiv.org/content/10.1101/2020.11.11.378935v2)
+Analysis scripts and code associated with the manuscript "Neural support for contributions of utility and narrative processing of evidence in juror decision making." [Preprint Link](https://www.biorxiv.org/content/10.1101/2020.11.11.378935)
 
 - behavior: hierarchical Bayesian modeling of case strength and punishment ratings and scenario text analysis
 - fmri: neurosynth-based decoding of decision making, roi analysis, and univariate results plotting
